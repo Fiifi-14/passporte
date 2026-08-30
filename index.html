@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passport Application Form</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root{
+  --ink:#1a1f1c;
+  --paper:#faf7f0;
+  --paper-raised:#ffffff;
+  --forest:#173d2e;
+  --forest-deep:#0e2820;
+  --gold:#b9922f;
+  --gold-soft:#e8d9ab;
+  --sage:#5c7a68;
+  --line:#d9d2bf;
+  --error:#a3342a;
+  --shadow: 0 1px 2px rgba(14,40,32,0.06), 0 8px 24px rgba(14,40,32,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:var(--paper); color:var(--ink); font-family:'Inter',sans-serif; min-height:100vh; padding:32px 16px 80px;}
+.wrap{max-width:780px;margin:0 auto;}
+
+.masthead{position:relative;background:var(--forest);border-radius:14px;padding:28px 28px 24px;color:var(--paper);overflow:hidden;box-shadow:var(--shadow);margin-bottom:28px;}
+.masthead svg.guilloche{position:absolute; inset:0; width:100%; height:100%; opacity:0.35; mix-blend-mode:screen;}
+.masthead-content{position:relative; z-index:1;}
+.eyebrow{font-family:'IBM Plex Mono', monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-soft);margin:0 0 6px;}
+.masthead h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(24px, 4vw, 32px);margin:0 0 4px;letter-spacing:-0.01em;}
+.masthead p.sub{margin:0;font-size:13.5px;color:var(--gold-soft);opacity:0.9;}
+.ref-badge{position:relative; z-index:1;margin-top:16px;display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono', monospace;font-size:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(232,217,171,0.35);padding:6px 12px;border-radius:999px;color:var(--gold-soft);}
+.ref-badge .dot{width:6px;height:6px;border-radius:50%;background:#7fbf8a;}
+
+.steps{display:flex;gap:4px;margin-bottom:24px;overflow-x:auto;}
+.step{flex:1;min-width:110px;text-align:center;padding:10px 6px 12px;border-bottom:3px solid var(--line);font-size:11.5px;font-weight:600;color:#9a927a;letter-spacing:0.02em;}
+.step .num{display:block;font-family:'IBM Plex Mono', monospace;font-size:10px;color:#a89f83;margin-bottom:3px;}
+.step.active{color:var(--forest); border-bottom-color:var(--gold);}
+.step.done{color:var(--sage); border-bottom-color:var(--sage);}
+
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:12px;padding:28px 26px;box-shadow:var(--shadow);}
+.panel h2{font-family:'Fraunces', serif;font-size:20px;font-weight:600;color:var(--forest-deep);margin:0 0 4px;}
+.panel .desc{font-size:13px;color:#6b6555;margin:0 0 18px;}
+
+.notice{background:#f5f1e4;border:1px solid var(--gold-soft);border-radius:8px;padding:14px 16px;font-size:13px;line-height:1.5;color:#4a4531;margin-bottom:20px;}
+.notice a{color:var(--forest); font-weight:600;}
+
+.subhead{font-family:'Fraunces', serif;font-size:16px;font-weight:600;color:var(--forest-deep);margin:26px 0 4px;padding-top:16px;border-top:1px solid var(--line);}
+.subhead:first-of-type{border-top:none;padding-top:0;margin-top:0;}
+.subhead .note{display:block;font-family:'Inter',sans-serif;font-weight:400;font-size:12px;color:#8a836e;margin-top:2px;}
+
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:16px 14px;}
+.grid .full{grid-column:1 / -1;}
+@media (max-width:560px){.grid{grid-template-columns:1fr;}}
+
+.field label{display:block;font-size:12px;font-weight:600;color:var(--forest-deep);margin-bottom:6px;}
+.field label .req{color:var(--error); margin-left:2px;}
+.field label .opt{color:#8a836e; font-weight:400; margin-left:4px;}
+.field label .hint{display:block;font-weight:400;font-size:11px;color:#8a836e;margin-top:2px;}
+.field input[type="text"],.field input[type="date"],.field input[type="tel"],.field input[type="email"],.field select{
+  width:100%;font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fffdf9;color:var(--ink);transition:border-color .15s, box-shadow .15s;
+}
+.field input:focus, .field select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(185,146,47,0.18);}
+.field .err-msg{font-size:11.5px; color:var(--error); margin-top:4px; display:none;}
+.field.invalid input, .field.invalid select{border-color:var(--error);}
+.field.invalid .err-msg{display:block;}
+
+.radio-group{display:flex; flex-wrap:wrap; gap:8px;}
+.radio-pill{border:1px solid var(--line);background:#fffdf9;border-radius:999px;padding:9px 16px;font-size:13px;cursor:pointer;user-select:none;transition:all .15s;}
+.radio-pill.selected{background:var(--forest);border-color:var(--forest);color:var(--paper);}
+
+.check-row{display:flex;align-items:flex-start;gap:10px;}
+.check-row input{margin-top:3px;}
+.check-row .ctext{font-size:13.5px; line-height:1.4;}
+
+.review-edit-link{font-size:11.5px;font-weight:600;color:var(--sage);cursor:pointer;background:none;border:none;padding:0;text-decoration:underline;}
+.review-section-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:6px;margin:0 0 10px;}
+.review-section-head h3{font-family:'Fraunces', serif;font-size:14.5px;color:var(--forest-deep);margin:0;}
+
+.upload-field{border:1.5px dashed var(--line);border-radius:10px;padding:16px;background:#fffdf9;}
+.upload-field.filled{border-style:solid; border-color:var(--sage); background:#f3f7f4;}
+.upload-field .up-label{font-size:12px;font-weight:600;color:var(--forest-deep);margin-bottom:4px;display:block;}
+.upload-field .up-meta{font-size:11px;color:#8a836e;margin-bottom:10px;}
+.upload-field input[type=file]{font-size:12.5px;}
+.upload-field .filename{font-size:12.5px;color:var(--sage);font-weight:600;margin-top:8px;}
+
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:26px;}
+button{font-family:'Inter',sans-serif;font-weight:600;font-size:13.5px;padding:11px 22px;border-radius:8px;border:1px solid transparent;cursor:pointer;transition:transform .1s, box-shadow .15s;}
+button:active{transform:translateY(1px);}
+.btn-primary{background:var(--forest); color:var(--paper);}
+.btn-primary:hover{background:var(--forest-deep);}
+.btn-ghost{background:transparent; color:var(--forest); border-color:var(--line);}
+.btn-ghost:hover{border-color:var(--forest);}
+.btn-primary:disabled{opacity:0.5; cursor:not-allowed;}
+
+.review-section{margin-bottom:20px;}
+.review-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px 16px; font-size:13px;}
+.review-grid .rlabel{color:#8a836e; font-size:11px; text-transform:uppercase; letter-spacing:0.03em;}
+.review-grid .rvalue{color:var(--ink); margin-bottom:8px;}
+
+.success-panel{text-align:center; padding:40px 20px;}
+.seal{width:88px; height:88px; border-radius:50%;background:radial-gradient(circle at 35% 30%, var(--gold-soft), var(--gold) 70%);display:flex; align-items:center; justify-content:center;margin:0 auto 20px;box-shadow:0 6px 18px rgba(185,146,47,0.35);font-family:'Fraunces', serif;font-size:30px;color:var(--forest-deep);}
+.success-panel .refline{font-family:'IBM Plex Mono', monospace;font-size:14px;background:#f5f1e4;display:inline-block;padding:8px 16px;border-radius:8px;margin:14px 0 22px;letter-spacing:0.03em;}
+
+.disclaimer{text-align:center;font-size:11.5px;color:#948d78;margin-top:22px;line-height:1.5;}
+
+@media print{
+  body{background:#fff; padding:0;}
+  .steps, .nav-row, .disclaimer, button{display:none !important;}
+  .masthead svg.guilloche{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <svg class="guilloche" viewBox="0 0 780 160" preserveAspectRatio="none">
+      <defs><pattern id="g1" width="40" height="40" patternUnits="userSpaceOnUse" patternTransform="rotate(15)">
+        <circle cx="20" cy="20" r="18" fill="none" stroke="#e8d9ab" stroke-width="0.6"/>
+        <circle cx="20" cy="20" r="11" fill="none" stroke="#e8d9ab" stroke-width="0.5"/>
+      </pattern></defs>
+      <rect width="780" height="160" fill="url(#g1)"/>
+    </svg>
+    <div class="masthead-content">
+      <p class="eyebrow">Republic of Ghana &mdash; Passport Services</p>
+      <h1>Passport Application Form</h1>
+      <p class="sub">Complete every section accurately. Fields marked with an asterisk are required.</p>
+      <div class="ref-badge"><span class="dot"></span><span id="refDisplay">Draft &mdash; not yet submitted</span></div>
+    </div>
+  </div>
+
+  <div class="steps" id="stepsBar"></div>
+
+  <form id="passportForm">
+
+    <!-- STEP 0: PERSONAL INFORMATION -->
+    <div class="panel step-panel" data-step="0">
+      <h2>Personal Information</h2>
+      <p class="desc">Page 1 &mdash; your identity, contact and residence details.</p>
+
+      <div class="notice">
+        Before you start: a <strong>Biometric Birth Certificate</strong> and any <strong>ID card</strong> are a
+        requirement for the passport application. If you're applying for a <strong>renewal</strong>, use a
+        renewal-specific version of this form instead.
+      </div>
+
+      <div class="grid" style="margin-bottom:22px;">
+        <div class="field full">
+          <div class="upload-field" data-upload="birthCert">
+            <span class="up-label">Upload Your Birth Certificate<span class="req">*</span></span>
+            <span class="up-meta">Upload 1 supported file. Max 10 MB.</span>
+            <input type="file" name="birthCert" required>
+            <div class="filename"></div>
+          </div>
+          <div class="err-msg">Birth certificate upload is required.</div>
+        </div>
+        <div class="field full">
+          <div class="upload-field" data-upload="idCard">
+            <span class="up-label">Upload Any Other Means of Identification<span class="req">*</span></span>
+            <span class="up-meta">Upload 1 supported file. Max 10 MB.</span>
+            <input type="file" name="idCard" required>
+            <div class="filename"></div>
+          </div>
+          <div class="err-msg">An ID upload is required.</div>
+        </div>
+        <div class="field full">
+          <div class="upload-field" data-upload="photo">
+            <span class="up-label">Upload a Passport-Sized Picture<span class="req">*</span></span>
+            <span class="up-meta">Upload 1 supported file: image. Max 100 MB.</span>
+            <input type="file" name="photo" accept="image/*" required>
+            <div class="filename"></div>
+          </div>
+          <div class="err-msg">A passport photo upload is required.</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="field"><label>Telephone Number<span class="req">*</span></label>
+          <input type="tel" name="phone" required><div class="err-msg">Phone number is required.</div></div>
+        <div class="field"><label>Email<span class="req">*</span></label>
+          <input type="email" name="email" required><div class="err-msg">Email is required.</div></div>
+
+        <div class="field"><label>Title<span class="req">*</span></label>
+          <select name="title" required>
+            <option value="">Select</option>
+            <option>Mr</option><option>Mrs</option><option>Miss</option><option>Ms</option><option>Dr</option><option>Prof</option>
+          </select><div class="err-msg">Title is required.</div></div>
+        <div class="field"><label>Surname<span class="req">*</span></label>
+          <input type="text" name="surname" required><div class="err-msg">Surname is required.</div></div>
+
+        <div class="field"><label>First Name<span class="req">*</span></label>
+          <input type="text" name="firstName" required><div class="err-msg">First name is required.</div></div>
+        <div class="field"><label>Other Name(s)</label>
+          <input type="text" name="otherNames"></div>
+
+        <div class="field"><label>Maiden Name(s)<span class="opt">(if applicable)</span></label>
+          <input type="text" name="maidenName"></div>
+        <div class="field"><label>Previous Name(s)<span class="opt">(if applicable)</span></label>
+          <input type="text" name="previousNames"></div>
+
+        <div class="field"><label>Date of Birth<span class="req">*</span></label>
+          <input type="date" name="dob" required><div class="err-msg">Date of birth is required.</div></div>
+        <div class="field"><label>Gender<span class="req">*</span></label>
+          <div class="radio-group" data-name="gender">
+            <div class="radio-pill" data-value="Male">Male</div>
+            <div class="radio-pill" data-value="Female">Female</div>
+          </div><div class="err-msg" data-for="gender">Please select gender.</div></div>
+
+        <div class="field"><label>City or Town of Birth<span class="req">*</span></label>
+          <input type="text" name="cityOfBirth" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Country of Birth<span class="req">*</span></label>
+          <input type="text" name="countryOfBirth" value="Ghana" required><div class="err-msg">Required.</div></div>
+
+        <div class="field"><label>Country of Residence<span class="req">*</span></label>
+          <input type="text" name="countryOfResidence" value="Ghana" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>ZIP / Post Code<span class="opt">(if any)</span></label>
+          <input type="text" name="zipCode"></div>
+
+        <div class="field"><label>City or Town of Residence<span class="req">*</span></label>
+          <input type="text" name="cityOfResidence" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Suburb<span class="req">*</span></label>
+          <input type="text" name="suburb" required><div class="err-msg">Required.</div></div>
+
+        <div class="field full"><label>House Number &amp; Street<span class="req">*</span></label>
+          <input type="text" name="streetAddress" required><div class="err-msg">Required.</div></div>
+
+        <div class="field"><label>Digital Address Code<span class="opt">(GhanaPost GPS)</span></label>
+          <input type="text" name="digitalAddress" placeholder="e.g. GC-109-0778"></div>
+        <div class="field"><label>Postal Address<span class="opt">(if any)</span></label>
+          <input type="text" name="postalAddress"></div>
+
+        <div class="field"><label>Height in Meters<span class="req">*</span>
+          <span class="hint">Check your Ghana Card for this and adjust it a little.</span></label>
+          <input type="text" name="height" placeholder="e.g. 1.72" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Visible Peculiarities<span class="opt">(if any)</span></label>
+          <input type="text" name="peculiarities"></div>
+
+        <div class="field"><label>Colour of Eyes<span class="req">*</span></label>
+          <select name="eyeColour" required>
+            <option value="">Select</option>
+            <option>Black</option><option>Brown</option><option>Hazel</option><option>Green</option><option>Blue</option><option>Grey</option>
+          </select><div class="err-msg">Please select eye colour.</div></div>
+        <div class="field"><label>Colour of Hair<span class="req">*</span></label>
+          <select name="hairColour" required>
+            <option value="">Select</option>
+            <option>Black</option><option>Brown</option><option>Grey</option><option>White</option><option>Bald</option><option>Other</option>
+          </select><div class="err-msg">Please select hair colour.</div></div>
+
+        <div class="field"><label>Nationality<span class="req">*</span></label>
+          <input type="text" name="nationality" value="Ghanaian" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Marital Status<span class="req">*</span></label>
+          <select name="maritalStatus" required>
+            <option value="">Select</option>
+            <option>Single</option><option>Married</option><option>Divorced</option><option>Widowed</option>
+          </select><div class="err-msg">Please select marital status.</div></div>
+
+        <div class="field"><label>Current Profession<span class="req">*</span></label>
+          <input type="text" name="profession" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Previous Profession<span class="opt">(if any)</span></label>
+          <input type="text" name="previousProfession"></div>
+
+        <div class="field"><label>National ID Card Number<span class="req">*</span></label>
+          <input type="text" name="nationalIdNumber" placeholder="GHA-XXXXXXXXX-X" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Social Security Number<span class="opt">(if any)</span></label>
+          <input type="text" name="ssn"></div>
+
+        <div class="field"><label>Voter's ID Card Number<span class="opt">(if any)</span></label>
+          <input type="text" name="voterId"></div>
+      </div>
+
+      <div class="subhead">Education<span class="note">Most recent institution attended</span></div>
+      <div class="grid">
+        <div class="field full"><label>Current / Last Educational Institution Attended<span class="opt">(if any)</span></label>
+          <input type="text" name="institutionName"></div>
+        <div class="field full"><label>Institution Address</label>
+          <input type="text" name="institutionAddress"></div>
+        <div class="field"><label>Attended From</label>
+          <input type="date" name="institutionFrom"></div>
+        <div class="field"><label>To</label>
+          <input type="date" name="institutionTo"></div>
+      </div>
+    </div>
+
+    <!-- STEP 1: EVIDENCE OF CITIZENSHIP + DUAL CITIZENSHIP -->
+    <div class="panel step-panel" data-step="1" style="display:none;">
+      <h2>Evidence of Citizenship</h2>
+      <p class="desc">Page 2 &mdash; your parents and one grandparent.</p>
+
+      <div class="subhead">Father's Details<span class="note">All correct, details of your father</span></div>
+      <div class="grid">
+        <div class="field"><label>Father's Surname<span class="req">*</span></label>
+          <input type="text" name="fatherSurname" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Father's First Name<span class="req">*</span></label>
+          <input type="text" name="fatherFirstName" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Father's Nationality<span class="req">*</span></label>
+          <input type="text" name="fatherNationality" value="Ghanaian" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Is Your Father Alive?<span class="req">*</span></label>
+          <div class="radio-group" data-name="fatherAlive">
+            <div class="radio-pill" data-value="Yes">Yes</div>
+            <div class="radio-pill" data-value="No">No</div>
+          </div><div class="err-msg" data-for="fatherAlive">Please select an option.</div></div>
+        <div class="field full"><label>Father's Residential Address<span class="req">*</span></label>
+          <input type="text" name="fatherAddress" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Father's Hometown<span class="req">*</span></label>
+          <input type="text" name="fatherHometown" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Father's Telephone<span class="req">*</span></label>
+          <input type="tel" name="fatherPhone" required><div class="err-msg">Required.</div></div>
+        <div class="field full"><label>Father's Email<span class="opt">(if any)</span></label>
+          <input type="email" name="fatherEmail"></div>
+      </div>
+
+      <div class="subhead">Mother's Details<span class="note">All correct, details of your mother</span></div>
+      <div class="grid">
+        <div class="field"><label>Mother's Surname<span class="req">*</span></label>
+          <input type="text" name="motherSurname" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Mother's First Name<span class="req">*</span></label>
+          <input type="text" name="motherFirstName" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Mother's Nationality<span class="req">*</span></label>
+          <input type="text" name="motherNationality" value="Ghanaian" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Is Your Mother Alive?<span class="req">*</span></label>
+          <div class="radio-group" data-name="motherAlive">
+            <div class="radio-pill" data-value="Yes">Yes</div>
+            <div class="radio-pill" data-value="No">No</div>
+          </div><div class="err-msg" data-for="motherAlive">Please select an option.</div></div>
+        <div class="field full"><label>Mother's Residential Address<span class="req">*</span></label>
+          <input type="text" name="motherAddress" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Mother's Hometown<span class="req">*</span></label>
+          <input type="text" name="motherHometown" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Mother's Telephone<span class="req">*</span></label>
+          <input type="tel" name="motherPhone" required><div class="err-msg">Required.</div></div>
+        <div class="field full"><label>Mother's Email<span class="opt">(if any)</span></label>
+          <input type="email" name="motherEmail"></div>
+      </div>
+
+      <div class="subhead">One Grandparent<span class="note">All correct, details of one grandparent</span></div>
+      <div class="grid">
+        <div class="field"><label>Grandparent's Surname<span class="req">*</span></label>
+          <input type="text" name="grandparentSurname" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Grandparent's First Name<span class="req">*</span></label>
+          <input type="text" name="grandparentFirstName" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Grandparent's Nationality<span class="req">*</span></label>
+          <input type="text" name="grandparentNationality" value="Ghanaian" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Is Your Grandparent Alive?<span class="req">*</span></label>
+          <div class="radio-group" data-name="grandparentAlive">
+            <div class="radio-pill" data-value="Yes">Yes</div>
+            <div class="radio-pill" data-value="No">No</div>
+          </div><div class="err-msg" data-for="grandparentAlive">Please select an option.</div></div>
+        <div class="field"><label>Grandparent's Residential Address<span class="req">*</span></label>
+          <input type="text" name="grandparentAddress" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Grandparent's Hometown<span class="req">*</span></label>
+          <input type="text" name="grandparentHometown" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Grandparent's Telephone<span class="opt">(if any)</span></label>
+          <input type="tel" name="grandparentPhone"></div>
+        <div class="field"><label>Grandparent's Email<span class="opt">(if any)</span></label>
+          <input type="email" name="grandparentEmail"></div>
+      </div>
+
+      <div class="subhead">Dual Citizenship</div>
+      <div class="grid">
+        <div class="field"><label>Do You Have Dual Citizenship?<span class="req">*</span></label>
+          <div class="radio-group" data-name="dualCitizenship">
+            <div class="radio-pill" data-value="Yes">Yes</div>
+            <div class="radio-pill" data-value="No">No</div>
+          </div><div class="err-msg" data-for="dualCitizenship">Please select an option.</div></div>
+        <div class="field"><label>If Yes, State Other Country</label>
+          <input type="text" name="dualCitizenshipCountry"></div>
+      </div>
+    </div>
+
+    <!-- STEP 2: DOCUMENTS & GUARANTORS -->
+    <div class="panel step-panel" data-step="2" style="display:none;">
+      <h2>Documents &amp; Guarantors</h2>
+      <p class="desc">Details of the documents you're presenting, and two people who can guarantee your application.</p>
+
+      <div class="subhead" style="margin-top:0; padding-top:0; border-top:none;">Birth Certificate</div>
+      <div class="grid">
+        <div class="field"><label>Document Number<span class="req">*</span></label>
+          <input type="text" name="birthCertDocNumber" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Date of Issue<span class="req">*</span></label>
+          <input type="date" name="birthCertIssueDate" required><div class="err-msg">Required.</div></div>
+        <div class="field full"><label>Place of Issue<span class="req">*</span></label>
+          <input type="text" name="birthCertIssuePlace" required><div class="err-msg">Required.</div></div>
+      </div>
+
+      <div class="subhead">Ghana Card</div>
+      <div class="grid">
+        <div class="field"><label>Document Number<span class="req">*</span></label>
+          <input type="text" name="ghanaCardDocNumber" placeholder="GHA-XXXXXXXXX-X" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Date of Issue<span class="req">*</span></label>
+          <input type="date" name="ghanaCardIssueDate" required><div class="err-msg">Required.</div></div>
+        <div class="field full"><label>Place of Issue<span class="req">*</span></label>
+          <input type="text" name="ghanaCardIssuePlace" required><div class="err-msg">Required.</div></div>
+      </div>
+
+      <div class="subhead">First Guarantor</div>
+      <div class="grid">
+        <div class="field full"><label>Full Name<span class="req">*</span></label>
+          <input type="text" name="guarantor1Name" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Residential Address<span class="req">*</span></label>
+          <input type="text" name="guarantor1Address" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Postal Address<span class="opt">(if any)</span></label>
+          <input type="text" name="guarantor1PostalAddress"></div>
+        <div class="field"><label>Telephone Number<span class="req">*</span></label>
+          <input type="tel" name="guarantor1Phone" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Occupation<span class="req">*</span></label>
+          <input type="text" name="guarantor1Occupation" required><div class="err-msg">Required.</div></div>
+        <div class="field full"><label>Email<span class="opt">(if any)</span></label>
+          <input type="email" name="guarantor1Email"></div>
+      </div>
+
+      <div class="subhead">Second Guarantor</div>
+      <div class="grid">
+        <div class="field full"><label>Full Name<span class="req">*</span></label>
+          <input type="text" name="guarantor2Name" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Residential Address<span class="req">*</span></label>
+          <input type="text" name="guarantor2Address" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Postal Address<span class="opt">(if any)</span></label>
+          <input type="text" name="guarantor2PostalAddress"></div>
+        <div class="field"><label>Telephone Number<span class="req">*</span></label>
+          <input type="tel" name="guarantor2Phone" required><div class="err-msg">Required.</div></div>
+        <div class="field"><label>Occupation<span class="req">*</span></label>
+          <input type="text" name="guarantor2Occupation" required><div class="err-msg">Required.</div></div>
+        <div class="field full"><label>Email<span class="opt">(if any)</span></label>
+          <input type="email" name="guarantor2Email"></div>
+      </div>
+    </div>
+
+    <!-- STEP 3: REVIEW -->
+    <div class="panel step-panel" data-step="3" style="display:none;">
+      <h2>Review &amp; Submit</h2>
+      <p class="desc">Check everything below carefully. Use the edit links to fix anything before you submit.</p>
+
+      <div id="reviewArea"></div>
+
+      <div class="grid" style="margin-top:22px;">
+        <div class="field full">
+          <div class="check-row" style="border:none; padding:6px 0;">
+            <input type="checkbox" name="finalConfirm" id="finalConfirm" required>
+            <label class="ctext" for="finalConfirm">I have checked all the details above and confirm they are accurate.</label>
+          </div>
+          <div class="err-msg" style="margin-left:2px;">Please confirm your details before submitting.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="panel success-panel" id="successPanel" style="display:none;">
+      <div class="seal">&#10003;</div>
+      <h2 style="font-family:'Fraunces',serif;">Application Ready</h2>
+      <p style="color:#6b6555; font-size:13.5px;">Your form is complete. Keep this reference for your records.</p>
+      <div class="refline" id="finalRef"></div>
+      <div>
+        <button type="button" class="btn-primary" onclick="window.print()">Print / Save as PDF</button>
+        <button type="button" class="btn-ghost" onclick="restartForm()">Start a New Application</button>
+      </div>
+    </div>
+
+    <div class="nav-row" id="navRow">
+      <button type="button" class="btn-ghost" id="backBtn">Back</button>
+      <button type="button" class="btn-primary" id="nextBtn">Continue</button>
+    </div>
+  </form>
+
+  <p class="disclaimer">This is an unofficial template modeled on a passport application form.<br>
+  It is not affiliated with the Ghana Immigration Service and does not submit or store files anywhere on its own &mdash; connect it to your own backend to save submissions.</p>
+</div>
+
+<script>
+// ---- CONFIGURATION ----
+// Paste the Web App URL you get after deploying the Apps Script here.
+// Leave as-is and the form will just show a local success screen
+// without actually sending anywhere.
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwdWXyhRO8_zsCpDkYDDdVr_ZuT3fY0dPowA5VbFw2THHJR_1tOBQKSqnbAhQFObtgPLw/exec";
+// -----------------------
+
+const steps = ["Personal Info","Citizenship Evidence","Documents & Guarantors","Review & Submit"];
+let current = 0;
+const stepsBar = document.getElementById('stepsBar');
+const panels = document.querySelectorAll('.step-panel');
+const backBtn = document.getElementById('backBtn');
+const nextBtn = document.getElementById('nextBtn');
+const navRow = document.getElementById('navRow');
+const successPanel = document.getElementById('successPanel');
+
+function renderSteps(){
+  stepsBar.innerHTML = steps.map((s,i)=>{
+    let cls = 'step';
+    if(i===current) cls+=' active';
+    else if(i<current) cls+=' done';
+    return `<div class="${cls}"><span class="num">${String(i+1).padStart(2,'0')}</span>${s}</div>`;
+  }).join('');
+}
+
+document.querySelectorAll('.radio-group').forEach(group=>{
+  group.addEventListener('click', e=>{
+    const pill = e.target.closest('.radio-pill');
+    if(!pill) return;
+    group.querySelectorAll('.radio-pill').forEach(p=>p.classList.remove('selected'));
+    pill.classList.add('selected');
+    group.dataset.selected = pill.dataset.value;
+    group.parentElement.classList.remove('invalid');
+  });
+});
+
+document.querySelectorAll('.upload-field input[type=file]').forEach(inp=>{
+  inp.addEventListener('change', ()=>{
+    const wrap = inp.closest('.upload-field');
+    const fn = wrap.querySelector('.filename');
+    if(inp.files && inp.files[0]){
+      wrap.classList.add('filled');
+      fn.textContent = '✓ ' + inp.files[0].name;
+      wrap.closest('.field').classList.remove('invalid');
+    } else {
+      wrap.classList.remove('filled');
+      fn.textContent = '';
+    }
+  });
+});
+
+function showStep(i){
+  panels.forEach(p=> p.style.display = (+p.dataset.step === i) ? 'block' : 'none');
+  backBtn.style.display = i===0 ? 'none' : 'inline-block';
+  nextBtn.textContent = i === steps.length-1 ? 'Submit Application' : 'Continue';
+  renderSteps();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function validateStep(i){
+  let valid = true;
+  const panel = document.querySelector('.step-panel[data-step="'+i+'"]');
+  panel.querySelectorAll('input[required], select[required]').forEach(el=>{
+    const field = el.closest('.field');
+    if(el.type === 'file'){
+      if(!el.files || !el.files[0]){ field.classList.add('invalid'); valid = false; }
+      else field.classList.remove('invalid');
+    } else if(el.type === 'checkbox'){
+      if(!el.checked){ field.classList.add('invalid'); valid = false; }
+      else field.classList.remove('invalid');
+    } else if(!el.value.trim()){
+      field.classList.add('invalid'); valid = false;
+    } else {
+      field.classList.remove('invalid');
+    }
+  });
+  panel.querySelectorAll('.radio-group').forEach(group=>{
+    if(!group.dataset.selected){
+      group.parentElement.classList.add('invalid'); valid = false;
+    } else {
+      group.parentElement.classList.remove('invalid');
+    }
+  });
+  return valid;
+}
+
+function collectData(){
+  const data = {};
+  document.querySelectorAll('#passportForm input, #passportForm select').forEach(el=>{
+    if(el.type === 'file') data[el.name] = el.files[0] ? el.files[0].name : '';
+    else if(el.type === 'checkbox') data[el.name] = el.checked;
+    else data[el.name] = el.value;
+  });
+  document.querySelectorAll('.radio-group').forEach(g=> data[g.dataset.name] = g.dataset.selected || '');
+  return data;
+}
+
+function fileToPayload(inputEl){
+  return new Promise((resolve)=>{
+    const file = inputEl.files && inputEl.files[0];
+    if(!file){ resolve(null); return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result.split(',')[1];
+      resolve({ name: file.name, mimeType: file.type, base64 });
+    };
+    reader.onerror = () => resolve(null);
+    reader.readAsDataURL(file);
+  });
+}
+
+async function buildSubmissionPayload(){
+  const data = collectData();
+  data.birthCert = await fileToPayload(document.querySelector('input[name="birthCert"]'));
+  data.idCard    = await fileToPayload(document.querySelector('input[name="idCard"]'));
+  data.photo     = await fileToPayload(document.querySelector('input[name="photo"]'));
+  return data;
+}
+
+function goToStep(i){
+  current = i;
+  showStep(current);
+}
+
+function buildReview(){
+  const d = collectData();
+  const sections = [
+    ['Personal Information', 0, [
+      ['Telephone', d.phone], ['Email', d.email], ['Title', d.title],
+      ['Surname', d.surname], ['First Name', d.firstName], ['Other Name(s)', d.otherNames || '—'],
+      ['Maiden Name(s)', d.maidenName || '—'], ['Previous Name(s)', d.previousNames || '—'],
+      ['Date of Birth', d.dob], ['Gender', d.gender],
+      ['City/Town of Birth', d.cityOfBirth], ['Country of Birth', d.countryOfBirth],
+      ['Country of Residence', d.countryOfResidence], ['ZIP/Post Code', d.zipCode || '—'],
+      ['City of Residence', d.cityOfResidence], ['Suburb', d.suburb],
+      ['House Number & Street', d.streetAddress], ['Digital Address', d.digitalAddress || '—'],
+      ['Postal Address', d.postalAddress || '—'],
+      ['Height (m)', d.height], ['Visible Peculiarities', d.peculiarities || '—'],
+      ['Eye Colour', d.eyeColour], ['Hair Colour', d.hairColour],
+      ['Nationality', d.nationality], ['Marital Status', d.maritalStatus],
+      ['Current Profession', d.profession], ['Previous Profession', d.previousProfession || '—'],
+      ['National ID Number', d.nationalIdNumber], ['Social Security Number', d.ssn || '—'],
+      ["Voter's ID Number", d.voterId || '—']
+    ]],
+    ['Education', 0, [
+      ['Institution', d.institutionName || '—'], ['Institution Address', d.institutionAddress || '—'],
+      ['Attended From', d.institutionFrom || '—'], ['To', d.institutionTo || '—']
+    ]],
+    ['Uploaded Documents', 0, [
+      ['Birth Certificate File', d.birthCert || '—'], ['ID Upload', d.idCard || '—'], ['Passport Photo', d.photo || '—']
+    ]],
+    ["Father's Details", 1, [
+      ['Surname', d.fatherSurname], ['First Name', d.fatherFirstName], ['Nationality', d.fatherNationality],
+      ['Alive', d.fatherAlive], ['Address', d.fatherAddress], ['Hometown', d.fatherHometown],
+      ['Telephone', d.fatherPhone], ['Email', d.fatherEmail || '—']
+    ]],
+    ["Mother's Details", 1, [
+      ['Surname', d.motherSurname], ['First Name', d.motherFirstName], ['Nationality', d.motherNationality],
+      ['Alive', d.motherAlive], ['Address', d.motherAddress], ['Hometown', d.motherHometown],
+      ['Telephone', d.motherPhone], ['Email', d.motherEmail || '—']
+    ]],
+    ['Grandparent', 1, [
+      ['Surname', d.grandparentSurname], ['First Name', d.grandparentFirstName], ['Nationality', d.grandparentNationality],
+      ['Alive', d.grandparentAlive], ['Address', d.grandparentAddress], ['Hometown', d.grandparentHometown],
+      ['Telephone', d.grandparentPhone || '—'], ['Email', d.grandparentEmail || '—']
+    ]],
+    ['Dual Citizenship', 1, [
+      ['Has Dual Citizenship', d.dualCitizenship], ['Other Country', d.dualCitizenshipCountry || '—']
+    ]],
+    ['Birth Certificate (Document)', 2, [
+      ['Document Number', d.birthCertDocNumber], ['Date of Issue', d.birthCertIssueDate], ['Place of Issue', d.birthCertIssuePlace]
+    ]],
+    ['Ghana Card', 2, [
+      ['Document Number', d.ghanaCardDocNumber], ['Date of Issue', d.ghanaCardIssueDate], ['Place of Issue', d.ghanaCardIssuePlace]
+    ]],
+    ['First Guarantor', 2, [
+      ['Full Name', d.guarantor1Name], ['Address', d.guarantor1Address], ['Postal Address', d.guarantor1PostalAddress || '—'],
+      ['Telephone', d.guarantor1Phone], ['Occupation', d.guarantor1Occupation], ['Email', d.guarantor1Email || '—']
+    ]],
+    ['Second Guarantor', 2, [
+      ['Full Name', d.guarantor2Name], ['Address', d.guarantor2Address], ['Postal Address', d.guarantor2PostalAddress || '—'],
+      ['Telephone', d.guarantor2Phone], ['Occupation', d.guarantor2Occupation], ['Email', d.guarantor2Email || '—']
+    ]]
+  ];
+  let html = '';
+  sections.forEach(([title, stepIdx, items])=>{
+    html += `<div class="review-section">
+      <div class="review-section-head">
+        <h3>${title}</h3>
+        <button type="button" class="review-edit-link" onclick="goToStep(${stepIdx})">Edit</button>
+      </div>
+      <div class="review-grid">`;
+    items.forEach(([label,val])=>{
+      html += `<div><div class="rlabel">${label}</div><div class="rvalue">${val || '—'}</div></div>`;
+    });
+    html += `</div></div>`;
+  });
+  document.getElementById('reviewArea').innerHTML = html;
+}
+
+nextBtn.addEventListener('click', async ()=>{
+  if(!validateStep(current)) return;
+  if(current === steps.length-1){
+    await submitForm();
+    return;
+  }
+  current++;
+  if(current === steps.length-1) buildReview();
+  showStep(current);
+});
+
+backBtn.addEventListener('click', ()=>{
+  current--;
+  showStep(current);
+});
+
+function genRef(){
+  const rand = Math.random().toString(36).substring(2,7).toUpperCase();
+  const y = new Date().getFullYear();
+  return `GH-PPT-${y}-${rand}`;
+}
+
+async function submitForm(){
+  const ref = genRef();
+  const configured = WEBAPP_URL && WEBAPP_URL.indexOf('PASTE_YOUR') === -1;
+
+  if(configured){
+    nextBtn.disabled = true;
+    nextBtn.textContent = 'Submitting…';
+    try{
+      const payload = await buildSubmissionPayload();
+      payload.reference = ref;
+      await fetch(WEBAPP_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+    } catch(err){
+      nextBtn.disabled = false;
+      nextBtn.textContent = 'Submit Application';
+      alert('Something went wrong sending your application. Please check your connection and try again.');
+      return;
+    }
+  }
+
+  document.getElementById('finalRef').textContent = 'Reference: ' + ref;
+  document.getElementById('refDisplay').textContent = 'Reference: ' + ref;
+  panels.forEach(p=>p.style.display='none');
+  navRow.style.display='none';
+  stepsBar.style.display='none';
+  successPanel.style.display='block';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function restartForm(){
+  document.getElementById('passportForm').reset();
+  document.querySelectorAll('.radio-pill').forEach(p=>p.classList.remove('selected'));
+  document.querySelectorAll('.radio-group').forEach(g=> delete g.dataset.selected);
+  document.querySelectorAll('.upload-field').forEach(u=>{u.classList.remove('filled'); u.querySelector('.filename').textContent='';});
+  document.getElementById('refDisplay').textContent = 'Draft — not yet submitted';
+  current = 0;
+  successPanel.style.display='none';
+  navRow.style.display='flex';
+  stepsBar.style.display='flex';
+  showStep(0);
+}
+
+showStep(0);
+</script>
+</body>
+</html>
