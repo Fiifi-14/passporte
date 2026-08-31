@@ -106,10 +106,19 @@ button:active{transform:translateY(1px);}
 
 .disclaimer{text-align:center;font-size:11.5px;color:#948d78;margin-top:22px;line-height:1.5;}
 
+/* ---- Printable full application copy ---- */
+.print-app{display:none;}
+.print-app .print-header{margin-bottom:22px; padding-bottom:14px; border-bottom:2px solid var(--forest);}
+.print-app .print-header h1{font-family:'Fraunces', serif; font-size:22px; color:var(--forest-deep); margin:0 0 4px;}
+.print-app .print-header .print-meta{font-family:'IBM Plex Mono', monospace; font-size:12px; color:#4a4531;}
+.print-app .print-header .print-meta div{margin-top:2px;}
+
 @media print{
   body{background:#fff; padding:0;}
-  .steps, .nav-row, .disclaimer, button{display:none !important;}
-  .masthead svg.guilloche{display:none;}
+  .steps, .nav-row, .disclaimer, button, .masthead{display:none !important;}
+  .panel{display:none !important;}
+  .print-app{display:block !important;}
+  .print-app .review-section{break-inside:avoid; margin-bottom:16px;}
 }
 </style>
 </head>
@@ -450,13 +459,15 @@ button:active{transform:translateY(1px);}
     <div class="panel success-panel" id="successPanel" style="display:none;">
       <div class="seal">&#10003;</div>
       <h2 style="font-family:'Fraunces',serif;">Application Ready</h2>
-      <p style="color:#6b6555; font-size:13.5px;">Your form is complete. Keep this reference for your records.</p>
+      <p style="color:#6b6555; font-size:13.5px;">Your form is complete. Keep a copy for your records.</p>
       <div class="refline" id="finalRef"></div>
       <div>
-        <button type="button" class="btn-primary" onclick="window.print()">Print / Save as PDF</button>
+        <button type="button" class="btn-primary" onclick="downloadApplicationPdf()">Download Filled Form (PDF)</button>
         <button type="button" class="btn-ghost" onclick="restartForm()">Start a New Application</button>
       </div>
     </div>
+
+    <div id="printApp" class="print-app"></div>
 
     <div class="nav-row" id="navRow">
       <button type="button" class="btn-ghost" id="backBtn">Back</button>
@@ -593,9 +604,8 @@ function goToStep(i){
   showStep(current);
 }
 
-function buildReview(){
-  const d = collectData();
-  const sections = [
+function getReviewSections(d){
+  return [
     ['Personal Information', 0, [
       ['Telephone', d.phone], ['Email', d.email], ['Title', d.title],
       ['Surname', d.surname], ['First Name', d.firstName], ['Other Name(s)', d.otherNames || '—'],
@@ -653,6 +663,11 @@ function buildReview(){
       ['Telephone', d.guarantor2Phone], ['Occupation', d.guarantor2Occupation], ['Email', d.guarantor2Email || '—']
     ]]
   ];
+}
+
+function buildReview(){
+  const d = collectData();
+  const sections = getReviewSections(d);
   let html = '';
   sections.forEach(([title, stepIdx, items])=>{
     html += `<div class="review-section">
@@ -667,6 +682,40 @@ function buildReview(){
     html += `</div></div>`;
   });
   document.getElementById('reviewArea').innerHTML = html;
+}
+
+function buildPrintApp(reference){
+  const d = collectData();
+  const sections = getReviewSections(d);
+  const fullName = [d.title, d.surname, d.firstName, d.otherNames].filter(Boolean).join(' ');
+  const now = new Date().toLocaleString();
+
+  let html = `<div class="print-header">
+    <h1>Republic of Ghana — Passport Application</h1>
+    <div class="print-meta">
+      <div>Applicant: ${fullName || '—'}</div>
+      <div>Reference: ${reference || '—'}</div>
+      <div>Printed: ${now}</div>
+    </div>
+  </div>`;
+
+  sections.forEach(([title, , items])=>{
+    html += `<div class="review-section">
+      <div class="review-section-head"><h3>${title}</h3></div>
+      <div class="review-grid">`;
+    items.forEach(([label,val])=>{
+      html += `<div><div class="rlabel">${label}</div><div class="rvalue">${val || '—'}</div></div>`;
+    });
+    html += `</div></div>`;
+  });
+
+  document.getElementById('printApp').innerHTML = html;
+}
+
+function downloadApplicationPdf(){
+  const reference = document.getElementById('finalRef').textContent.replace('Reference: ', '');
+  buildPrintApp(reference);
+  window.print();
 }
 
 nextBtn.addEventListener('click', async ()=>{
